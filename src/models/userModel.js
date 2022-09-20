@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 
-
 const userSchema = new mongoose.Schema({
-
     title: {
         type: String,
         required: true,
@@ -26,14 +24,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    },
+    }
+},
+    { timestamps: true });
 
-    address: {
-        street: { type: String },
-        city: { type: String },
-        pincode: { type: String }
-    },
-}, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema)
 
