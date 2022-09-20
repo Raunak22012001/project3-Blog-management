@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 
 //----------------------------validations-------------------------------------
 const isValid = function (value) {
+    console.log(value)
     if (typeof value === 'undefined' || value === null) return false
     if (typeof value === 'string' && value.trim().length === 0) return false
     return true
@@ -37,9 +38,9 @@ const createUser = async function(req,res){
     let data = req.body;
     let {title, name, phone, email, password, address} = data;
 
-    if(Object.keys(data).length<6) return res.status(400).send({status:false, message:"please use mandatory data to create user"})
+    // if(Object.keys(data).length<6) return res.status(400).send({status:false, message:"please use mandatory data to create user"})
 
-    if(!title==title || title=="") return res.status(400).send({status:false, message:"please use title"})
+    // if(!title==title || title=="") return res.status(400).send({status:false, message:"please use title"})
 
     if (title!=="Mr" && title!=="Mrs" && title!=="Miss") return res.status(400).send({status:false, message:"please use title correctly"})
     
