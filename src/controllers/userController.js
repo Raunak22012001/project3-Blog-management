@@ -15,7 +15,7 @@ const createUser = async function(req,res){
 
     if(!title==title || title=="") return res.status(400).send({status:false, message:"please use title"})
 
-    if(!title=="Mr" && !title=="Mrs" && !title=="Miss") return res.status(400).send({status:false, message:"please use correct title"})
+    if (title!=="Mr" && title!=="Mrs" && title!=="Miss") return res.status(400).send({status:false, message:"please use title correctly"})
     
     if(!name==name || name=="") return res.status(400).send({status:false, message:"please use correct name"})
     if(!checkName.test(name)) return res.status(400).send({status:false,message:"don't use special char or number"})
