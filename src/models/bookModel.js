@@ -1,7 +1,5 @@
-const mongoose = required('mongoose')
+const mongoose = require('mongoose')
 const ObjectId = mongoose.Schema.Types.ObjectId
-
-
 
 const bookSchema = new mongoose.Schema({
 
@@ -16,7 +14,7 @@ const bookSchema = new mongoose.Schema({
         required: true
     },
     userId: {
-        type:ObjectId,
+        type: ObjectId,
         required: true,
         ref: 'User'
     },
@@ -38,14 +36,14 @@ const bookSchema = new mongoose.Schema({
         default: 0
             },
       deletedAt: {Date},
-      isDeleted: {
-        type:Boolean,
-        default: false},
 
     releasedAt: {
        type: Date, 
         required:true,
          }
-        },{ timestamps: true });
+        },
+
+        { timestamps: true }
+    );
 
 module.exports = mongoose.model('Book', bookSchema)
