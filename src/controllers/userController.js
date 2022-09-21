@@ -2,9 +2,9 @@ const userModel = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 
 
-//----------------------------validations-------------------------------------
+//============================== validations ====================================//
+
 const isValid = function (value) {
-    console.log(value)
     if (typeof value === 'undefined' || value === null) return false
     if (typeof value === 'string' && value.trim().length === 0) return false
     return true
@@ -19,7 +19,7 @@ const checkName = function (value) {
     return regex.test(value)
 }
 const phoneNub = function (value) {
-     let regex =/[6 7 8 9][0-9]{9}/                //const mobileRegex = /^[0-9]{10}$/
+     let regex =/[6 7 8 9][0-9]{9}/
     return regex.test(value)
 }
 const emailMatch = function (value) {
@@ -30,7 +30,7 @@ const matchPass = function (value) {
     let regex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
     return regex.test(value)
 }
-//----------------------------------------------Create user ----------------------------------------
+//======================================= Create user ===================================/
 
 
 const createUser = async function(req,res)
@@ -88,7 +88,7 @@ catch (error) {
 
 }
 
-//-------------------------------------User login -----------------------------------------------------
+//========================================== User login =====================================//
 
 const userlogin = async function(req, res)
 {
@@ -117,7 +117,8 @@ const userlogin = async function(req, res)
       }, "Scretekeygroup22"
       )
       res.setHeader("x-auth-key", token);
-    return res.status(201).send({status: true, message: "login successfully", data: token });
+    return res.status(201).send({status: true, message: "login successfully", data: token, iat: Math.floor(Date.now()/1000), //  create 
+    exp: Math.floor(Date.now()/1000) });
 
     }
     catch(err) {
@@ -127,6 +128,5 @@ const userlogin = async function(req, res)
 }
 
 
-module.exports.userlogin=userlogin
-module.exports.createUser=createUser
+module.exports = {userlogin,createUser,isValid}
 
