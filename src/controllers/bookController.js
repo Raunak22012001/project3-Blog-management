@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 
 const checkstring = function (value) {
-    let regex = /^[a-z\s]+$/i
+    let regex =  /^(?=(?:\D*\d){13}(?:(?:\D*\d){3})?$)[\d-]+$/
     return regex.test(value)
 }
 
@@ -132,8 +132,12 @@ const updateBooks = async function (req, res) {
     try {
         let bookId = req.params.bookId
         if (!isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "Please enter valid bookId" })
-        let chekdBooks = await bookModel.findOne({ _id: bookId, isDeleted: false })
-        if (!chekdBooks) return res.status(404).send({ status: false, message: "Book is deleted" })
+        // let chekdBooks = await bookModel.findOne({ _id: bookId, isDeleted: false })
+        // if (!chekdBooks) return res.status(404).send({ status: false, message: "Book is deleted" })
+
+        let checkBooks = await bookModel.findById( bookId).select({isDeleted:1, _id:0 })
+        console.log(checkBooks)
+        if(checkBooks.isDeleted == true) return res.status(404).send({ status: false, message: "Book is deleted" })
 
         let data = req.body
         let { title, excerpt, releasedAt, ISBN } = data
