@@ -50,14 +50,14 @@ const createUser = async function(req,res)
     if(!checkName(name)) return res.status(400).send({status:false,message:"Please enter valid name"})
     //Db calling
     let duplicateName = await userModel.findOne({name:name})
-    if(duplicateName) return res.status(400).send({status:false, mssage:"name already exist"})
+    if(duplicateName) return res.status(409).send({status:false, mssage:"name already exist"})
     
 
     if(!isValid(phone) ) return res.status(400).send({status:false, message:"Please enter phone"})
     if(!phoneNub(phone)) return res.status(400).send({status:false,message:"Phone number is invalid"})
      //Db calling
     let checkUserByphone = await userModel.findOne({phone:phone})
-    if(checkUserByphone) return res.status(400).send({status:false, mssage:"phone already exist"})
+    if(checkUserByphone) return res.status(409).send({status:false, mssage:"phone already exist"})
     
 
     
@@ -65,14 +65,14 @@ const createUser = async function(req,res)
     if(!emailMatch(email)) return res.status(400).send({status:false,message:"please enter valid email "})
     //Db calling
     let checkUserByemail = await userModel.findOne({email:email})
-    if(checkUserByemail) return res.status(400).send({status:false, message:"email already exist"})
+    if(checkUserByemail) return res.status(409).send({status:false, message:"email already exist"})
     
     
     if(!isValid(password) ) return res.status(400).send({status:false, message:"Please enter password"})
     if(!matchPass(password)) return res.status(400).send({status:false,message:"Please enter valid password "})
         //Db calling
     let checkUserBypassword = await userModel.findOne({password:password})
-    if(checkUserBypassword) return res.status(400).send({status:false, message:"password already exist"})
+    if(checkUserBypassword) return res.status(409).send({status:false, message:"password already exist"})
 
 
     if(!isValid(address) ) return res.status(400).send({status:false, message:"Please enter address"})
@@ -97,17 +97,16 @@ const userlogin = async function(req, res)
     let password = req.body.password;
 
 
-    if(!isValid(userName) ) return res.status(400).send({status:false, message:"please use title"})
+    if(!isValid(userName) ) return res.status(400).send({status:false, message:"please use username"})
     if(!emailMatch(userName)) return res.status(400).send({status:false,message:"please use valid email "})
-    //Db calling
-   
-    if(!isValid(password) ) return res.status(400).send({status:false, message:"please use title"})
+ 
+    if(!isValid(password) ) return res.status(400).send({status:false, message:"please use password"})
     if(!matchPass(password)) return res.status(400).send({status:false,message:"please use valid password "})
-    //Db calling
+
 
 
     let chekUser = await userModel.findOne({email:userName, password:password})
-    if(!(chekUser)) return res.status(400).send({status:false, message:"Invalid password"})
+    if(!(chekUser)) return res.status(400).send({status:false, message:"Invalid email or password"})
 
 
     const token = await jwt.sign({

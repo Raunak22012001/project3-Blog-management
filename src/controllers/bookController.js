@@ -6,6 +6,15 @@ const Validation = userController.isValid;
 
 const mongoose = require('mongoose')
 
+const checkstring = function (value) {
+    let regex = /^[a-z\s]+$/i
+    return regex.test(value)
+}
+
+const isVAlidRequestBody = function(requestBody){
+    return Object.keys(requestBody).length > 0
+}
+
 const isValidObjectId = function (ObjectId) {
     return mongoose.Types.ObjectId.isValid(ObjectId);
 };
@@ -17,10 +26,11 @@ const createBooks = async function (req, res) {
     try {
         let data = req.body;
         let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = data;
-
+        if(!isVAlidRequestBody(data) ) return res.status(400).send({status:false, message:"please enter books details"})
 
         if (!Validation(title)) return res.status(400).send({ status: false, message: "use correct title which is mandatory " })
-        let checkTitle = await bookModel.findOne({title})
+        let checkTitle = await bookModel.findOne({ title: title })
+        if (checkTitle) return res.status(409).send({ status: false, message: "title already exist" })
 
         
         if (checkTitle) return res.status(400).send({ status: false, message: "title already exist" })
@@ -32,7 +42,7 @@ const createBooks = async function (req, res) {
 
 
         let checkIsbn = await bookModel.findOne({ISBN})
-        if (checkIsbn) return res.status(400).send({ status: false, message: "ISBN already exist" })
+        if (checkIsbn) return res.status(409).send({ status: false, message: "ISBN already exist" })
         if (!Validation(ISBN)) return res.status(400).send({ status: false, message: "use correct ISBN" })
 
 
@@ -51,35 +61,59 @@ const createBooks = async function (req, res) {
 }
 
 
-//======================================= Get Books By Query Params ========================//
-
-const getBooksByQuery = async function (req, res) {
-    try {
+const getBooksByQuery = async function(req , res)
+{
+    try{
         let data = req.query
-        let { userId, category, subcategory } = data;
-        
-        
-        if(data.title || data.excerpt || data.ISBN || data.reviews || data.releasedAt) return res.status(400).send({status:false, message:"don't use this type of queries except userId, category and subcategory to get books"})
+    let {userId, category, subcategory} = data
+
+        if(Object.keys(data).length==0)
+        {
+            let allBooks = await bookModel.find({isDeleted:false})
+            return res.status(200).send({status:true, message:"all books", data : allBooks})
+        }
+    
+    let filter= {}
+
+    if(!userId==userId || userId=="" ) return res.status(400).send({status:false, message:"use correct userId"})
+    if(userId)
+    {
+        if(!isValidObjectId(userId)) return res.status(400).send({status:false, message:"Please enter valid userId"})
+        filter.userId=userId
 
         
-        if(!userId==userId || userId=="" ) return res.status(400).send({status:false, message:"use correct userId"})
-        if(userId.length<24 || userId.length>24) return res.status(400).send({status:false, message:"use correct userId"})
+    }
+    
+    if(!category==category || category=="" ) return res.status(400).send({status:false, message:"use correct category"})
+    if(category)
+    {
+        if(!checkstring(category)) return res.status(400).send({status:false, message:"The category can contain only alphabets"})
+        filter.category=category
+    } 
 
-        if(!category==category || category=="" ) return res.status(400).send({status:false, message:"use correct category"})
+    if(!subcategory==subcategory || subcategory=="" ) return res.status(400).send({status:false, message:"use correct subcategory"})
+    if(subcategory)
+    {
+        if(!checkstring(subcategory)) return res.status(400).send({status:false, message:"The subcategory can contain only aplhabets"})
+        filter.subcategory=subcategory
+    }
 
-        if(!subcategory==subcategory || subcategory=="" ) return res.status(400).send({status:false, message:"use correct subcategory"})
-
-
-        let books = await bookModel.find(data,{isDeleted:false})
-        
-
-        res.status(200).send({ status: true, msg: "Book list", data: books });
-
-    } catch (error) {
-        return res.status(500).send({ status: false, message: error.message });
+      filter.isDeleted=false
+     console.log(filter)
+    
+    if(userId || category || subcategory) {
+     let books = await bookModel.find(filter).select({_id:1, title:1, excerpt:1, userId:1, category:1, releasedAt:1, reviews:1, isDeleted:1})
+    return res.status(200).send({status:true, message:"All books", count:books.length, data:books})
+    }
+    else{
+        return res.status(400).send({status:false, message: "The filter can be only userId, category or subcategory"})
     }
 }
 
+    catch(err){
+        return res.status(500).send({status:false, Error: err.message})
+    }
+}
 
 //===================================== Get Books By Path Params=========================== //
 
