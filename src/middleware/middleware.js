@@ -36,26 +36,31 @@ const authorisation = async function (req,res,next)
     try{
         let decoded = req.decodedToken
         decodeduserid = decoded.userId
-       console.log(decodeduserid)
+       //console.log("decoded UserId is", decodeduserid)
 
     if(req.params.bookId)
       {
         let bookId = req.params.bookId
-        //console.log(bookId)
+        //console.log("bookId is" ,bookId)
       if(!isValidObjectId(bookId)) return res.status(400).send({status:false, message:"Please enter valid bookId"})
 
-      let getuserid = await bookModel.findById(bookId)
-      console.log(getuserid.userId)//.select({userId:1, _id:0})
+      let getuserid = await bookModel.findById(bookId).select({userId:1, _id:0})
+      if(!getuserid) return res.status(400).send({status:false, message:"wrong path params bookId"})
+      
+      let getuserId = getuserid.userId.toString()
+      //console.log("UserId from bookmodel", getuserId)
     
-    if(decodeduserid !== getuserid.userId)
+    if(decodeduserid !== getuserId)
     return res.status(403).send({status:false, message:"You are not authorised by bookId"})
         next()
       }
 
-      let userId = req.body.userId
+     else {
+        let userId = req.body.userId
       if(decodeduserid !== userId)
     return res.status(403).send({status:false, message:"forbidden due to userId"})
         next()
+    }
 
     }
     catch(err) {
