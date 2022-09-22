@@ -18,7 +18,7 @@ router.post('/books',authentication,bookController.createBooks )
 
 router.get('/books', bookController.getBooksByQuery )
 
-router.get('/books/:bookId',authentication, bookController.getBookById )
+router.get('/books/:bookId',bookController.getBookById )
 
 
 module.exports = router
