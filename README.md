@@ -91,10 +91,14 @@ Make sure the unique constraints are not violated when making the update
 Check if the bookId exists (must have isDeleted false and is present in collection). If it doesn't, return an HTTP status 404 with a response body like this
 Return an HTTP status 200 if updated successfully with a body like this
 Also make sure in the response you return the updated book document.
+
+
 DELETE /books/:bookId
 Check if the bookId exists and is not deleted. If it does, mark it deleted and return an HTTP status 200 with a response body with status and message.
 If the book document doesn't exist then return an HTTP status of 404 with a body like this
 Review APIs
+
+
 POST /books/:bookId/review
 Add a review for the book in reviews collection.
 Check if the bookId exists and is not deleted before adding the review. Send an error response with appropirate status code like this if the book does not exist

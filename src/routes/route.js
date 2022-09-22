@@ -6,28 +6,24 @@ const userController = require('../controllers/userController')
 
 const bookController = require('../controllers/bookController')
 
-const {authentication,authorisation} = require('../middleware/authentication')
-
 
 
 router.post('/login', userController.userlogin)
 
 router.post('/register', userController.createUser)
 
-router.post('/books',authentication,bookController.createBooks )
+router.post('/books',bookController.createBooks )
 
 router.get('/books', bookController.getBooksByQuery )
 
 router.get('/books/:bookId', bookController.getBooksPath)
 
+router.delete('/books/:bookId', bookController.deleteBooks)
 
 
 router.all("/**",  (req, res) => {
     res.status(404).send({ status: false, msg: "The api you request is not available" })
 });
-
-
-
 
 
 module.exports = router

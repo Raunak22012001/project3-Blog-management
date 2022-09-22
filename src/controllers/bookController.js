@@ -99,7 +99,6 @@ const getBooksByQuery = async function(req , res)
     }
 
       filter.isDeleted=false
-     console.log(filter)
     
     if(userId || category || subcategory) {
      let books = await bookModel.find(filter).select({_id:1, title:1, excerpt:1, userId:1, category:1, releasedAt:1, reviews:1, isDeleted:1})
@@ -125,7 +124,35 @@ const getBooksPath = async function(req,res){
     } catch (error) {
         return res.status(500).send({status:false, message:error.message})
     }
-} 
+}
 
 
-module.exports = { createBooks, getBooksByQuery, getBooksPath }
+//====================================== Delete Books By path params ========================//
+
+const deleteBooks = async function(req,res){
+    let data = req.params.bookId;
+    if(data){
+        if(!isValidObjectId(data)) return res.status(400).send({status:false, message: "please use valid bookId"})
+    }
+
+    let checkByBookId = await bookModel.findOne({_id:data, isDeleted:false})
+    if(!checkByBookId) return res.status(404).send({status:false, message: "Book not found or already deleted"})
+
+    if (checkByBookId.isDeleted == false) {
+        let deletes = await bookModel.findOneAndUpdate({ _id: data }, {
+            $set: { isDeleted: true },
+            deletedAt: Date.now()
+        }, { new: true })
+        return res.status(200).send({status:true,message:deletes })
+    }
+}
+
+    //let delete = await bookModel.findOneAndUpdate({_id:data, isDeleted:false},{$set:{isDeleted:true, deletedAt:Date.now()}, {new:true})
+
+// DELETE /books/:bookId
+// Check if the bookId exists and is not deleted. If it does, mark it deleted and return an HTTP status 200 with a response body with status and message.
+// If the book document doesn't exist then return an HTTP status of 404 with a body like this
+// Review APIs
+
+
+module.exports = { createBooks, getBooksByQuery, getBooksPath, deleteBooks }
