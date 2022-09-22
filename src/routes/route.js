@@ -16,5 +16,16 @@ router.post('/books', bookController.createBooks )
 
 router.get('/books', bookController.getBooksByQuery )
 
+router.get('/books/:bookId', bookController.getBooksPath)
+
+
+
+router.all("/**",  (req, res) => {
+    res.status(404).send({ status: false, msg: "The api you request is not available" })
+});
+
+
+
+
 
 module.exports = router
