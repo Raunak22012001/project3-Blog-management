@@ -6,21 +6,24 @@ const userController = require('../controllers/userController')
 
 const bookController = require('../controllers/bookController')
 
+const {authentication,authorisation} = require('../middleware/middleware')
 
 
-router.post('/login', userController.userlogin)
 
 router.post('/register', userController.createUser)
 
-router.post('/books',bookController.createBooks )
+router.post('/books',authentication, authorisation, bookController.createBooks )
 
-router.get('/books', bookController.getBooksByQuery )
+router.post('/login', userController.userlogin)
 
-router.get('/books/:bookId',bookController.getBookById )
 
-router.put('/books/:bookId' , bookController.updateBooks)
+router.get('/books', authentication,bookController.getBooksByQuery )
 
-router.delete('/books/:bookId', bookController.deleteBook)
+router.get('/books/:bookId',authentication,bookController.getBookById )
+
+router.put('/books/:bookId' ,authentication,authorisation, bookController.updateBooks)
+
+router.delete('/books/:bookId',authentication,authorisation, bookController.deleteBook)
 
 // router.get('/books/:bookId', bookController.getBooksPath)
 

@@ -1,5 +1,6 @@
 const userModel = require('../models/userModel')
 const jwt = require('jsonwebtoken')
+const moment = require('moment')
 
 
 //============================== validations ====================================//
@@ -112,12 +113,13 @@ const userlogin = async function(req, res)
     const token = await jwt.sign({
         userId : chekUser._id.toString(),
         iat: Math.floor(Date.now()/1000), //  create 
-        exp: Math.floor(Date.now()/1000)   // expire
+        exp:  Math.floor(moment().add(1, 'days'))  // expire
       }, "Scretekeygroup22"
       )
       res.setHeader("x-auth-key", token);
     return res.status(201).send({status: true, message: "login successfully", data: token, iat: Math.floor(Date.now()/1000), //  create 
-    exp: Math.floor(Date.now()/1000) });
+     exp: Math.floor(moment().add(1, 'days'))
+ });
 
     }
     catch(err) {

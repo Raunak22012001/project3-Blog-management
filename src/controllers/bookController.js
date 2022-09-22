@@ -7,7 +7,7 @@ const Validation = userController.isValid;
 const mongoose = require('mongoose')
 
 const checkstring = function (value) {
-    let regex = /^[a-z\s]+$/i
+    let regex =  /^[a-z\s]+$/i
     return regex.test(value)
 }
 
@@ -20,7 +20,7 @@ const isValidObjectId = function (ObjectId) {
 };
 
 const checkISBN = function (value) {
-    let regex = /[0-9]{13}/
+    let regex = /^(?=(?:\D*\d){13}(?:(?:\D*\d){3})?$)[\d-]+$/
     return regex.test(value)
 }
 
@@ -105,6 +105,10 @@ const getBooksByQuery = async function (req, res) {
 
         if (userId || category || subcategory) {
             let books = await bookModel.find(filter).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1, isDeleted: 1 })
+
+            if(Object.keys(books).length==0) return res.status(404).send({status:false, message:"there is no data with this filter"})
+
+
             return res.status(200).send({ status: true, message: "All books", count: books.length, data: books })
         }
         else {
@@ -136,8 +140,12 @@ const updateBooks = async function (req, res) {
     try {
         let bookId = req.params.bookId
         if (!isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "Please enter valid bookId" })
-        let chekdBooks = await bookModel.findOne({ _id: bookId, isDeleted: false })
-        if (!chekdBooks) return res.status(404).send({ status: false, message: "Book is deleted" })
+        // let chekdBooks = await bookModel.findOne({ _id: bookId, isDeleted: false })
+        // if (!chekdBooks) return res.status(404).send({ status: false, message: "Book is deleted" })
+
+        let checkBooks = await bookModel.findById( bookId).select({isDeleted:1, _id:0 })
+        console.log(checkBooks)
+        if(checkBooks.isDeleted == true) return res.status(404).send({ status: false, message: "Book is deleted" })
 
         let data = req.body
         let { title, excerpt, releasedAt, ISBN } = data
