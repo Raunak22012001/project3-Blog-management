@@ -14,12 +14,19 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
+    address: {
+        street: {type:String, trim:true},
+        city: {type:String, trim:true},
+        pincode: {type:String, trim:true}
+      },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
     password: {
         type: String,
