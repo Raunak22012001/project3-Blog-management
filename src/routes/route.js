@@ -12,7 +12,7 @@ const {authentication,authorisation} = require('../middleware/middleware')
 
 router.post('/register', userController.createUser)
 
-router.post('/books',authentication, authorisation, bookController.createBooks )
+router.post('/books',authentication, authorisation, bookController.createBooks)
 
 router.post('/login', userController.userlogin)
 
@@ -25,9 +25,6 @@ router.put('/books/:bookId' ,authentication,authorisation, bookController.update
 
 router.delete('/books/:bookId',authentication,authorisation, bookController.deleteBook)
 
-// router.get('/books/:bookId', bookController.getBooksPath)
-
-// router.delete('/books/:bookId', bookController.deleteBooks)
 
 
 router.all("/**",  (req, res) => {
