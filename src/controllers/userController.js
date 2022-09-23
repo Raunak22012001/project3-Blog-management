@@ -20,7 +20,7 @@ const checkName = function (value) {
     return regex.test(value)
 }
 const phoneNub = function (value) {
-     let regex =/[6 7 8 9][0-9]{9}/
+     let regex =/^[6789][0-9]{9}$/
     return regex.test(value)
 }
 const emailMatch = function (value) {
@@ -71,9 +71,8 @@ const createUser = async function(req,res)
     
     if(!isValid(password) ) return res.status(400).send({status:false, message:"Please enter password"})
     if(!matchPass(password)) return res.status(400).send({status:false,message:"Please enter valid password "})
-        //Db calling
-    let checkUserBypassword = await userModel.findOne({password:password})
-    if(checkUserBypassword) return res.status(409).send({status:false, message:"password already exist"})
+        
+    //Db calling
 
 
     if(!isValid(address) ) return res.status(400).send({status:false, message:"Please enter address"})
@@ -102,7 +101,7 @@ const userlogin = async function(req, res)
     if(!emailMatch(userName)) return res.status(400).send({status:false,message:"please use valid email "})
  
     if(!isValid(password) ) return res.status(400).send({status:false, message:"please use password"})
-    if(!matchPass(password)) return res.status(400).send({status:false,message:"please use valid password "})
+    if(!matchPass(password)) return res.status(400).send({status:false,message:"please use special character to make strong password "})
 
 
 
@@ -116,7 +115,7 @@ const userlogin = async function(req, res)
         exp:  Math.floor(moment().add(1, 'days'))  // expire
       }, "Scretekeygroup22"
       )
-      res.setHeader("x-auth-key", token);
+      res.setHeader("x-api-key", token);
     return res.status(201).send({status: true, message: "login successfully", data: token, iat: Math.floor(Date.now()/1000), //  create 
      exp: Math.floor(moment().add(1, 'days'))
  });

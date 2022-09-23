@@ -30,7 +30,7 @@ const isvalidrating = function (value) {
 
 
 
-//-----------------------------------------Crete review --------------------------------------------
+//======================================== Crete review ====================================//
 
 const createReview = async function (req, res) {
     try {
@@ -90,6 +90,48 @@ const createReview = async function (req, res) {
 
 
 
+const updateReview = async function(req,res){
+    try {
+        
+    let data = req.params;
+    let {bookId, reviewId} = data;
+
+    let body = req.body;
+
+    let checkBook = await bookModel.findOne({_id:bookId, isDeleted:false})
+    
+    await reviewModel.findOneAndUpdate({_id:reviewId, isDeleted:false},{$set:body}, {new:true})
+    
+    let getallReview = await reviewModel.find({bookId:bookId, isDeleted:false}).select({_id:1, bookId:1, reviewedBy:1 , reviewedAt:1, rating:1,review:1})
+    console.log(getallReview)
+
+    let bookwithreviewdata =
+        {
+            _id:checkBook._id,
+            title:checkBook.title,
+            excerpt:checkBook.excerpt,
+            userId:checkBook.userId,
+            ISBN:checkBook.ISBN,
+            category:checkBook.category,
+            subcategory:checkBook.subcategory,
+            reviews:checkBook.reviews,
+            releasedAt:checkBook.releasedAt,
+            createdAt:checkBook.createdAt,
+            updatedAt:checkBook.updatedAt,
+            reviewsdata: getallReview
+        }
+    
+
+    return res.status(200).send({status:true, data:bookwithreviewdata})
+
+} catch (error) {
+        return res.status(500).send({status:false, message:error.message})
+}
+
+}
+
+
+
 
 const deleteReview = async function (req, res) {
 
@@ -124,7 +166,11 @@ const deleteReview = async function (req, res) {
 }
 
 
+<<<<<<< HEAD
 
 module.exports = { createReview, deleteReview }
 
 
+=======
+module.exports = {createReview, deleteReview, updateReview }
+>>>>>>> eb9cbe8c9f99d19bdfdc851f8fb83455997bf3d9
