@@ -12,7 +12,7 @@ const reviewSchema = new mongoose.Schema(
             type:String,
             default:"Guest",
             required: true,
-            trim:true, 
+             trim:true, 
             value:{type:String,trim:true}   // {value:{type:String}} 
         },
 
@@ -25,7 +25,8 @@ const reviewSchema = new mongoose.Schema(
             required: true,
         },
         review: {
-            type:String
+            type:String,
+            trim : true
         },
   isDeleted: {
             type:Boolean,
@@ -38,4 +39,4 @@ const reviewSchema = new mongoose.Schema(
 
 
 
-module.exports = mongoose.model('Book', bookSchema)
+module.exports = mongoose.model('Reviws', reviewSchema)

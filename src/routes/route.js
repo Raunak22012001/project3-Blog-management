@@ -1,33 +1,26 @@
 const express = require('express');
-
 const router = express.Router();
-
 const userController = require('../controllers/userController')
-
 const bookController = require('../controllers/bookController')
-
+const reviewController = require('../controllers/reviewController')
 const {authentication,authorisation} = require('../middleware/middleware')
 
 
 
 router.post('/register', userController.createUser)
-
-router.post('/books',authentication, authorisation, bookController.createBooks )
-
 router.post('/login', userController.userlogin)
 
 
+router.post('/books',authentication, authorisation, bookController.createBooks )
 router.get('/books', authentication,bookController.getBooksByQuery )
-
 router.get('/books/:bookId',authentication,bookController.getBookById )
-
 router.put('/books/:bookId' ,authentication,authorisation, bookController.updateBooks)
-
 router.delete('/books/:bookId',authentication,authorisation, bookController.deleteBook)
 
-// router.get('/books/:bookId', bookController.getBooksPath)
 
-// router.delete('/books/:bookId', bookController.deleteBooks)
+router.post('/books/:bookId/review', reviewController.createReview)
+router.delete('/books/:bookId/review/:reviewId' , reviewController.deleteReview)
+
 
 
 router.all("/**",  (req, res) => {

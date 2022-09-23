@@ -84,7 +84,8 @@ const getBooksByQuery = async function (req, res) {
         if (Object.keys(data).length == 0)
         {
             let allBooks = await bookModel.find({ isDeleted: false })
-            return res.status(200).send({ status: true, message: "all books", data: allBooks })
+            let bookData =allBooks.sort((a, b) => a.title.localeCompare(b.title))
+            return res.status(200).send({ status: true, message: "all books", data: bookData })
         }
 
         let filter = {}
