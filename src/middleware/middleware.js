@@ -3,11 +3,14 @@ const bookModel = require('../models/bookModel')
 const userModel = require('../models/userModel')
 const mongoose = require('mongoose')
 
+// ---------------------------------validations---------------------------------------
+
+
 const isValidObjectId = function (ObjectId) {
     return mongoose.Types.ObjectId.isValid(ObjectId);
 };
 
-
+// ---------------------------------------athentication------------------------------------
 
 const authentication = async function (req, res, next)
 {
@@ -18,7 +21,7 @@ const authentication = async function (req, res, next)
     }
     if(!(token)) return res.status(401).send({status:false, message:"Please enter token"})
     let decodedtoken = jwt.verify(token, 'Scretekeygroup22')
-    //console.log(decodedtoken)
+    
     if(!decodedtoken) return res.status(401).send({status:false, message: "Invalid token"})
     req.decodedToken = decodedtoken
     next()
@@ -28,26 +31,27 @@ catch(err) {
 
 }
 }
-// create :- userId,     update:- bookId,     delete:- bookId
 
+
+// --------------------------------------authorisatin--------------------------------------
 
 const authorisation = async function (req,res,next)
 {
     try{
         let decoded = req.decodedToken
         decodeduserid = decoded.userId
-       console.log("decoded UserId is", decodeduserid)
+    //    console.log("decoded UserId is", decodeduserid)
 
     if(req.params.bookId)
       {
         let bookId = req.params.bookId
-        console.log("bookId is" ,bookId)
+        // console.log("bookId is" ,bookId)
       if(!isValidObjectId(bookId)) return res.status(400).send({status:false, message:"Please enter valid bookId"})
 
       let getuserid = await bookModel.findById(bookId).select({userId:1, _id:0})
-      
+      if(Object.keys(getuserid).length == 0) return res.status(404).send({status: false, message:"Book not found"}) 
       let getuserId = getuserid.userId.toString()
-      console.log("UserId from bookmodel", getuserId)
+    //   console.log("UserId from bookmodel", getuserId)
     
     if(decodeduserid !== getuserId)
     return res.status(403).send({status:false, message:"You are not authorised by bookId"})
@@ -67,5 +71,6 @@ const authorisation = async function (req,res,next)
 
     }
 }
+
 
 module.exports = {authentication, authorisation}

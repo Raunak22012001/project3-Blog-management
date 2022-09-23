@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        enum:["Mr", "Miss", "Mrs"]
+        trim:true
+        // enum:["Mr", "Miss", "Mrs"]
     },
     name: {
         type: String,
@@ -14,16 +15,24 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
+    address: {
+        street: {type:String, trim:true},
+        city: {type:String, trim:true},
+        pincode: {type:String, trim:true}
+      },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        trim:true
     }
 },
     { timestamps: true });
