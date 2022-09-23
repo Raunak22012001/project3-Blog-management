@@ -22,6 +22,10 @@ router.post('/books/:bookId/review', reviewController.createReview)
 router.delete('/books/:bookId/review/:reviewId' , reviewController.deleteReview)
 
 
+router.put('/books/:bookId/review/:reviewId' , reviewController.updateReview)
+
+
+
 
 router.all("/**",  (req, res) => {
     res.status(404).send({ status: false, msg: "The api you request is not available" })

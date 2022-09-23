@@ -1,9 +1,9 @@
 const bookModel = require('../models/bookModel');
-const userModel = require('../models/userModel');
+//const userModel = require('../models/userModel');
 const userController = require('../controllers/usercontroller');
 const mongoose = require('mongoose');
 
-// -------------------------validations-------------------------------------------------------
+// ==================================== validations ===================================//
 
 const Validation = userController.isValid;
 
@@ -26,9 +26,7 @@ const checkISBN = function (value) {
     return regex.test(value)
 }
 
-// ------------------------------------------ create Books ---------------------------------------------------
-
-// ============================================= Create Books =================================== // 
+// ============================================= Create Books ======================================= // 
 
 const createBooks = async function (req, res) {
     try {
@@ -74,7 +72,7 @@ const createBooks = async function (req, res) {
     }
 }
 
-// ------------------------------------------ Get Books By Query ---------------------------------------------------
+// =============================================== Get Books By Query ==================================== //
 
 const getBooksByQuery = async function (req, res) {
     try {
@@ -137,7 +135,7 @@ const getBooksByQuery = async function (req, res) {
     }
 }
 
-// ------------------------------------------ Get Books By Id ---------------------------------------------------
+// ============================================= Get Books By Id ================================//
 
 const getBookById = async function (req, res) {
     try {
@@ -155,7 +153,7 @@ const getBookById = async function (req, res) {
 }
 
 
-// ------------------------------------------ Update Books ---------------------------------------------------
+// ========================================= Update Books =============================================//
 
 
 const updateBooks = async function (req, res) {
@@ -219,7 +217,7 @@ const updateBooks = async function (req, res) {
 }
 
 
-// ------------------------------------------ Delete Books ---------------------------------------------------
+// ============================================ Delete Books ====================================== //
 
 const deleteBook = async function (req, res) {
 
@@ -244,10 +242,6 @@ const deleteBook = async function (req, res) {
         return res.status(500).send({ status: false, message: "Error", error: err.message })
     }
 }
-
-
-module.exports = { createBooks, getBooksByQuery, getBookById, updateBooks, deleteBook }
-
 
 
 module.exports = { createBooks, getBooksByQuery, getBookById, updateBooks, deleteBook }

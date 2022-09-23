@@ -14,8 +14,6 @@ const isValidObjectId = function (ObjectId) {
 const authentication = async function (req, res, next) {
     try {
         let token = req.headers["x-api-key"]
-        
-        //if (!(token)) { token = req.headers["x-api-key"] }
 
         if (!(token)) return res.status(401).send({ status: false, message: "Please enter token" })
 

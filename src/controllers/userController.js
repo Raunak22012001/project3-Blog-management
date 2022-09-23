@@ -71,9 +71,8 @@ const createUser = async function(req,res)
     
     if(!isValid(password) ) return res.status(400).send({status:false, message:"Please enter password"})
     if(!matchPass(password)) return res.status(400).send({status:false,message:"Please enter valid password "})
-        //Db calling
-    //let checkUserBypassword = await userModel.findOne({password:password})
-    //if(checkUserBypassword) return res.status(409).send({status:false, message:"password already exist"})
+        
+    //Db calling
 
 
     if(!isValid(address) ) return res.status(400).send({status:false, message:"Please enter address"})
