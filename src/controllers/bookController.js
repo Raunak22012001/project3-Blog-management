@@ -1,6 +1,8 @@
 const bookModel = require('../models/bookModel');
 const userModel = require('../models/userModel');
+const reviewModel = require('../models/reviewModel');
 const userController = require('../controllers/usercontroller');
+
 const mongoose = require('mongoose');
 
 // -------------------------validations-------------------------------------------------------
@@ -144,7 +146,13 @@ const getBookById = async function (req, res) {
 
         let booksWithId = await bookModel.findOne({ _id: bookId, isDeleted: false })
         if (!booksWithId) return res.status(404).send({ status: false, message: "Books not found or already deleted" })
-        return res.status(200).send({ status: true, message: "Particular books", data: booksWithId })
+        //console.log(Object.keys(booksWithId))
+        let reviewdata = await reviewModel.find({bookId : bookId,isDeleted : false}).select("_id bookId rating reviewedBy review reviewedAt")
+        //bookwithid has 3 internal keys and the data of book was in ._doc key so to add review key we have to edit bookwithid internally
+        const book = booksWithId._doc
+        book["reviewsdata"] = reviewdata
+        
+        return res.status(200).send({ status: true, message: "Particular books", data: book })
     }
     catch (err) {
         return res.status(500).send({ status: false, Error: err.message })
