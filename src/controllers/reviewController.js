@@ -127,8 +127,9 @@ const updateReview = async function (req, res) {
 
         if (review) {
             
-           // if (!checkreview(review)) return res.status(400).send({ status: false, message: "Pleae enter valid review" })
             if (!isValid(review)) return res.status(400).send({ status: false, message: "Please enter review" })
+         if (!((/[a-zA-Z0-9!%/\"]*$/).test(review))) return res.status(400).send({ status: false, message: "Pleae enter valid review" })
+            
         }
 
 
@@ -152,7 +153,7 @@ const updateReview = async function (req, res) {
             checkbooks['updatedReview'] = updatedReview
 
 
-            return res.status(200).send({ status: true, mesaage:"Review update is successful",data: checkbooks })
+            return res.status(200).send({ status: true, message: checkbooks })
         }
         else return res.status(400).send({ status: false, message: " update only from reviewedBy, rating, review" })
 
