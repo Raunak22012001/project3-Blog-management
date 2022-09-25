@@ -31,6 +31,8 @@ const matchPass = function (value) {
     let regex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
     return regex.test(value)
 }
+
+
 //======================================= Create user ===================================/
 
 
@@ -49,30 +51,27 @@ const createUser = async function(req,res)
     
     if(!isValid(name) ) return res.status(400).send({status:false, message:"Please enter name"})
     if(!checkName(name)) return res.status(400).send({status:false,message:"Please enter valid name"})
-    //Db calling
-    let duplicateName = await userModel.findOne({name:name})
-    if(duplicateName) return res.status(409).send({status:false, mssage:"name already exist"})
+    
     
 
     if(!isValid(phone) ) return res.status(400).send({status:false, message:"Please enter phone"})
     if(!phoneNub(phone)) return res.status(400).send({status:false,message:"Phone number is invalid"})
-     //Db calling
-    let checkUserByphone = await userModel.findOne({phone:phone})
-    if(checkUserByphone) return res.status(409).send({status:false, mssage:"phone already exist"})
     
 
     
     if(!isValid(email) ) return res.status(400).send({status:false, message:"Please enter email"})
-    if(!emailMatch(email)) return res.status(400).send({status:false,message:"please enter valid email "})
-    //Db calling
-    let checkUserByemail = await userModel.findOne({email:email})
-    if(checkUserByemail) return res.status(409).send({status:false, message:"email already exist"})
-    
+    if(!emailMatch(email)) return res.status(400).send({status:false,message:"please enter valid email"})
+
+    let checkExistUser = await userModel.findOne({$or:[{phone:phone},{email:email}]})
+    if(checkExistUser){
+        if(checkExistUser.phone==phone) return res.status(409).send({status:false, mssage:"phone already exist"})
+        if(checkExistUser.email==email) return res.status(409).send({status:false, mssage:"emailId already exist"})
+    } 
+   
     
     if(!isValid(password) ) return res.status(400).send({status:false, message:"Please enter password"})
     if(!matchPass(password)) return res.status(400).send({status:false,message:"Please enter valid password "})
         
-    //Db calling
 
 
     if(!isValid(address) ) return res.status(400).send({status:false, message:"Please enter address"})
@@ -88,7 +87,7 @@ catch (error) {
 
 }
 
-//========================================== User login =====================================//
+// ========================================== User login ===================================== //
 
 const userlogin = async function(req, res)
 {
@@ -98,7 +97,7 @@ const userlogin = async function(req, res)
 
 
     if(!isValid(userName) ) return res.status(400).send({status:false, message:"please use username"})
-    if(!emailMatch(userName)) return res.status(400).send({status:false,message:"please use valid email "})
+    if(!emailMatch(userName)) return res.status(400).send({status:false,message:"please use valid email"})
  
     if(!isValid(password) ) return res.status(400).send({status:false, message:"please use password"})
     if(!matchPass(password)) return res.status(400).send({status:false,message:"please use special character to make strong password "})
@@ -106,13 +105,13 @@ const userlogin = async function(req, res)
 
 
     let chekUser = await userModel.findOne({email:userName, password:password})
-    if(!(chekUser)) return res.status(400).send({status:false, message:"Invalid email or password"})
+    if(!(chekUser)) return res.status(400).send({status:false, message:"invalid  email or password"})
 
 
     const token = await jwt.sign({
         userId : chekUser._id.toString(),
-        iat: Math.floor(Date.now()/1000), //  create 
-        exp:  Math.floor(moment().add(1, 'days'))  // expire
+        iat: Math.floor(Date.now()/1000), 
+        exp:  Math.floor(moment().add(1, 'days'))
       }, "Scretekeygroup22"
       )
       res.setHeader("x-api-key", token);
@@ -126,8 +125,6 @@ const userlogin = async function(req, res)
 
     }
 }
-
-
 
 module.exports = {userlogin,createUser,isValid}
 

@@ -9,7 +9,7 @@ const isValidObjectId = function (ObjectId) {
     return mongoose.Types.ObjectId.isValid(ObjectId);
 };
 
-// ---------------------------------------athentication------------------------------------
+// ================================= athentication ==========================================//
 
 const authentication = async function (req, res, next) {
     try {
@@ -31,6 +31,8 @@ const authentication = async function (req, res, next) {
 }
 
 
+// ================================= authorisation ==========================================//
+
 const authorisation = async function (req, res, next) {
     try {
         let decoded = req.decodedToken
@@ -42,7 +44,7 @@ const authorisation = async function (req, res, next) {
             if (!isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "Please enter valid bookId" })
 
             let getuserid = await bookModel.findById(bookId).select({ userId: 1, _id: 0 })
-            if (!getuserid) return res.status(400).send({ status: false, message: "wrong path params bookId" })
+            if (!getuserid) return res.status(400).send({ status: false, message: "incorrect bookId"})
 
             let getuserId = getuserid.userId.toString()
 
@@ -53,6 +55,7 @@ const authorisation = async function (req, res, next) {
 
         else {
             let userId = req.body.userId
+            if (!isValidObjectId(userId)) return res.status(400).send({ status: false, message: "Please enter valid userId" })
             if (decodeduserid !== userId)
                 return res.status(403).send({ status: false, message: "forbidden due to userId" })
             next()
