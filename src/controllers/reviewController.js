@@ -34,7 +34,6 @@ const isvalidrating = function (value) {
 }
 
 
-
 //======================================== Crete review =============================================//
 
 const createReview = async function (req, res) {
@@ -65,7 +64,7 @@ const createReview = async function (req, res) {
         let findbook = await bookModel.findOne({ _id: bookId, isDeleted: false })
         if (!findbook) return res.status(404).send({ status: false, message: "Book not found or book is deleted" })
 
-        if (!findbook) return res.status(404).send({ status: false, message: "Book nod found or book is deleted" })
+        //if (!findbook) return res.status(404).send({ status: false, message: "Book nod found or book is deleted" })
        
         let reviewCreated = await reviewModel.create(data)
         // console.log(reviewCreated)
@@ -88,7 +87,7 @@ const createReview = async function (req, res) {
             reviews: reviewCount.reviews,
             reviewdata: reviewCreated
         }
-        return res.status(201).send({ status: true, message: "review created successfully", data: bookwithreviewdata  })
+        return res.status(201).send({ status: true, message: "Review creation is successful", data: bookwithreviewdata  })
     }
     catch (error) {
         return res.status(500).send({ status: false, message: error.message })
@@ -127,7 +126,8 @@ const updateReview = async function (req, res) {
         }
 
         if (review) {
-            if (!checkstring(review)) return res.status(400).send({ status: false, message: "Pleae enter valid review" })
+            
+           // if (!checkreview(review)) return res.status(400).send({ status: false, message: "Pleae enter valid review" })
             if (!isValid(review)) return res.status(400).send({ status: false, message: "Please enter review" })
         }
 
@@ -152,7 +152,7 @@ const updateReview = async function (req, res) {
             checkbooks['updatedReview'] = updatedReview
 
 
-            return res.status(200).send({ status: true, data: checkbooks })
+            return res.status(200).send({ status: true, mesaage:"Review update is successful",data: checkbooks })
         }
         else return res.status(400).send({ status: false, message: " update only from reviewedBy, rating, review" })
 

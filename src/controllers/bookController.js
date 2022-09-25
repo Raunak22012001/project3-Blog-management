@@ -28,7 +28,10 @@ const checkISBN = function (value) {
     let regex = /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/
     return regex.test(value)
 }
-
+const checkreleasedAt = function (value) {
+    let regex = /^(19|20)\d\d([- /.])(0[1-9]|1[012])\2(0[1-9]|[12][0-9]|3[01])$/
+    return regex.test(value)
+}
 // ============================================= Create Books ======================================= // 
 
 const createBooks = async function (req, res) {
@@ -38,7 +41,7 @@ const createBooks = async function (req, res) {
         if (!isVAlidRequestBody(data)) return res.status(400).send({ status: false, message: "please enter books details" })
 
         if (!Validation(title)) return res.status(400).send({ status: false, message: "use correct title which is mandatory " })
-       // if (!checkstring(title)) return res.status(400).send({ status: false, message: "Please enter valid title" })
+    /////if (!checkstring(title)) return res.status(400).send({ status: false, message: "Please enter valid title" })
 
 
         if (!Validation(excerpt)) return res.status(400).send({ status: false, message: "please Enter the excerpt or excerpt can not be Empty " })
@@ -60,12 +63,13 @@ const createBooks = async function (req, res) {
 
 
         if (!Validation(category)) return res.status(400).send({ status: false, message: "please enter  category or category can not be Empty " })
-        if (!checkstring(category)) return res.status(400).send({ status: false, message: "Please enter valid title" })
+        if (!checkstring(category)) return res.status(400).send({ status: false, message: "Please enter valid format of category" })
 
         if (!Validation(subcategory)) return res.status(400).send({ status: false, message: "please enter correct subcategory" })
-        if (!checkstring(subcategory)) return res.status(400).send({ status: false, message: "Please enter valid title" })
+        if (!checkstring(subcategory)) return res.status(400).send({ status: false, message: "Please enter valid formant of subcategory" })
 
-        if (!Validation(releasedAt) && (!isNaN(releasedAt))) return res.status(400).send({ status: false, message: "please enter correct releasedDate" })
+        if (!Validation(releasedAt)) return res.status(400).send({ status: false, message: "please enter correct releasedDate" })
+        if (!checkreleasedAt(releasedAt)) return res.status(400).send({ status: false, message: "please enter  valid format of  releasedAt" })
 
 
         let createBook = await bookModel.create(data)
@@ -197,7 +201,7 @@ const updateBooks = async function (req, res) {
         }
 
         if (releasedAt) {
-            if (!Validation(releasedAt)) return res.status(400).send({ status: false, message: "please enter title" })
+            if (!Validation(releasedAt)) return res.status(400).send({ status: false, message: "please enter proper releaseAt" })
             updations.releasedAt = releasedAt
         }
         if (ISBN) {
@@ -214,7 +218,7 @@ const updateBooks = async function (req, res) {
 
         if (title || excerpt || releasedAt || ISBN) {
             let updatedBooks = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { $set: updations }, { new: true })
-            return res.status(201).send({ status: true, message: "Updation successfull", data: updatedBooks })
+            return res.status(200).send({ status: true, message: "Updation successfull", data: updatedBooks })
         }
         else {
             return res.status(400).send({ status: false, message: "The filter can be only title ,excerpt ,releasedAt ,ISBN" })
