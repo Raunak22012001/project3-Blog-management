@@ -3,6 +3,7 @@ const reviewModel = require('../models/reviewModel')
 const bookModel = require('../models/bookModel');
 
 const mongoose = require('mongoose');
+const { find } = require('../models/userModel');
 
 // ====================================== validations =========================================//
 
@@ -65,7 +66,10 @@ const createReview = async function (req, res) {
         if (!findbook) return res.status(404).send({ status: false, message: "Book not found or book is deleted" })
 
         let reviewCreated = await reviewModel.create(data)
-        let reviewCount = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { reviews: findbook.reviews + 1 } }, { new: true })
+        // console.log(reviewCreated)
+        let findreview = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 })
+        // console.log(findreview)
+        let reviewCount = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { $set: { reviews: findbook.reviews + 1 } }, { new: true })
 
         let bookwithreviewdata =
         {
