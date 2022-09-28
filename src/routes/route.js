@@ -8,6 +8,8 @@ const bookController = require('../controllers/bookController')
 
 const reviewController = require('../controllers/reviewController')
 
+const createcover =require('../AWS/aws')
+
 const {authentication,authorisation} = require('../middleware/middleware')
 
 
@@ -18,6 +20,8 @@ router.post('/login', userController.userlogin)
 
 
 router.post('/books',authentication, authorisation, bookController.createBooks)
+
+router.post('/write-files-aws',createcover.createcover)  // AWS
 
 router.get('/books', authentication,bookController.getBooksByQuery)
 

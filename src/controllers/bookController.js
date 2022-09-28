@@ -37,7 +37,7 @@ const checkreleasedAt = function (value) {
 const createBooks = async function (req, res) {
     try {
         let data = req.body;
-        let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = data;
+        let { title, excerpt, userId, ISBN, category, subcategory, releasedAt , bookCover } = data;
         if (!isVAlidRequestBody(data)) return res.status(400).send({ status: false, message: "please enter books details" })
 
         if (!Validation(title)) return res.status(400).send({ status: false, message: "use correct title which is mandatory " })
